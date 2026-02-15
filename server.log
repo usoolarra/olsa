@@ -1,0 +1,7 @@
+[2026-02-15T20:40:05.217Z] Server running at http://localhost:3000 
+[2026-02-15T20:40:18.098Z] [1771187492960] Job not found 
+[2026-02-15T20:40:46.473Z] [1771187492960] Job not found 
+[2026-02-15T20:40:56.162Z] [1771188056162] Starting background upload for uploads\audio-1771188055955-696245619.mp3 
+[2026-02-15T20:41:01.061Z] [1771188056162] Uploaded to AssemblyAI 
+[2026-02-15T20:41:01.761Z] [1771188056162] Transcript submitted. ID: a9e8f5c6-8cd3-46a6-a0fc-49b6e7e52c71 
+[2026-02-15T20:41:34.231Z] [1771188056162] Job completed 

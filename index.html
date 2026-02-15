@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSB-USO Olarra TranscribeAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* --- variables.css --- */
+        :root {
+            /* Colors */
+            --color-bg-primary: #0f172a;
+            /* Slate 900 */
+            --color-bg-secondary: #1e293b;
+            /* Slate 800 */
+            --color-bg-card: #1e293b;
+
+            --color-text-primary: #f8fafc;
+            /* Slate 50 */
+            --color-text-secondary: #94a3b8;
+            /* Slate 400 */
+            --color-text-accent: #38bdf8;
+            /* Sky 400 */
+
+            --color-primary: #3b82f6;
+            /* Blue 500 */
+            --color-primary-hover: #2563eb;
+            /* Blue 600 */
+
+            --color-accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            --color-success: #10b981;
+            /* Emerald 500 */
+            --color-warning: #f59e0b;
+            /* Amber 500 */
+            --color-error: #ef4444;
+            /* Red 500 */
+
+            /* Typography */
+            --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.875rem;
+
+            /* Spacing */
+            --spacing-1: 0.25rem;
+            --spacing-2: 0.5rem;
+            --spacing-3: 0.75rem;
+            --spacing-4: 1rem;
+            --spacing-6: 1.5rem;
+            --spacing-8: 2rem;
+            --spacing-12: 3rem;
+
+            /* Components */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+            /* Animation */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Landing Page specifics */
+            --lp-primary: #6366f1;
+            --lp-secondary: #ec4899;
+            --lp-accent: #8b5cf6;
+            --lp-dark: #0f172a;
+            --lp-glass: rgba(255, 255, 255, 0.05);
+            --lp-border: rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- global.css --- */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family-sans);
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- Landing Page Styling --- */
+        .landing-container {
+            background-color: var(--lp-dark);
+            color: var(--color-text-primary);
+            overflow-x: hidden;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s infinite alternate;
+        }
+
+        .orb-1 {
+            width: 50vw;
+            height: 50vw;
+            background: var(--lp-primary);
+            top: -10%;
+            left: -10%;
+        }
+
+        .orb-2 {
+            width: 40vw;
+            height: 40vw;
+            background: var(--lp-secondary);
+            bottom: -10%;
+            right: -10%;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 30vw;
+            height: 30vw;
+            background: var(--lp-accent);
+            top: 40%;
+            left: 30%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(30px, 50px) scale(1.1);
+            }
+        }
+
+        .lp-content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lp-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+            animation: slideDown 1s ease-out;
+        }
+
+        .lp-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+        }
+
+        .lp-logo span {
+            background: linear-gradient(to right, var(--lp-primary), var(--lp-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--color-text-primary);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .lp-btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .lp-btn-primary {
+            background: linear-gradient(135deg, var(--lp-primary), var(--lp-accent));
+            color: white;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .lp-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.6);
+        }
+
+        .lp-hero {
+            display: flex;
+            align-items: center;
+            min-height: 80vh;
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+
+        .lp-hero-content {
+            flex: 1;
+            animation: slideRight 1s ease-out;
+            text-align: left;
+        }
+
+        .lp-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50px;
+            color: #818cf8;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .lp-hero h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, white, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .lp-hero .lead {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+        }
+
+        .lp-hero-visual {
+            flex: 1;
+            position: relative;
+            animation: floatCard 6s ease-in-out infinite;
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--lp-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+        }
+
+        .lp-features {
+            padding: 5rem 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--lp-glass);
+            border: 1px solid var(--lp-border);
+            padding: 2rem;
+            border-radius: 16px;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .lp-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justifyContent: center;
+            margin-bottom: 1.5rem;
+            color: var(--lp-primary);
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .feature-text {
+            color: #94a3b8;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideRight {
+            from {
+                transform: translateX(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes floatCard {
+
+            0%,
+            100% {
+                transform: translateY(0) perspective(1000px) rotateY(-5deg) rotateX(5deg);
+            }
+
+            50% {
+                transform: translateY(-20px) perspective(1000px) rotateY(-5deg) rotateX(5deg);
+            }
+        }
+
+        /* --- App Styles --- */
+        .app-shell {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .app-header {
+            padding: var(--spacing-6) var(--spacing-8);
+            border-bottom: 1px solid var(--color-bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 50;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            width: 100%;
+            max-width: 600px;
+            min-height: 350px;
+            border: 2px dashed var(--color-bg-secondary);
+            border-radius: var(--radius-xl);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(30, 41, 59, 0.5);
+            gap: var(--spacing-6);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            padding: var(--spacing-8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragging {
+            border-color: var(--color-primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--color-bg-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-normal);
+        }
+
+        .upload-zone:hover .upload-icon {
+            background: var(--color-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Process Visualizer */
+        .process-viz-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top: 3rem;
+        }
+
+        .pv-steps {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .pv-track-bg {
+            position: absolute;
+            top: 24px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--color-bg-secondary);
+            z-index: 0;
+        }
+
+        .pv-track-fill {
+            position: absolute;
+            top: 24px;
+            left: 0;
+            height: 4px;
+            background: var(--color-primary);
+            z-index: 0;
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        .pv-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pv-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--color-bg-secondary);
+            border: 2px solid var(--color-bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-2);
+            transition: all var(--transition-normal);
+        }
+
+        .pv-step.active .pv-circle {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+        }
+
+        .pv-step.active .pv-circle i {
+            color: var(--color-primary);
+        }
+
+        .pv-step.done .pv-circle {
+            background: var(--color-bg-primary);
+            border-color: var(--color-success);
+        }
+
+        .pv-step.done .pv-circle i {
+            color: var(--color-success);
+        }
+
+        .pv-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            transition: color var(--transition-normal);
+        }
+
+        .pv-step.active .pv-label {
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        /* Results View */
+        .results-container {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--color-bg-card);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--color-bg-secondary);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 600px;
+        }
+
+        .results-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--color-bg-secondary);
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .results-tab-btn {
+            flex: 1;
+            padding: var(--spacing-4);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-2);
+            font-weight: 500;
+            transition: all var(--transition-fast);
+        }
+
+        .results-tab-btn.active {
+            background: var(--color-bg-secondary);
+            border-bottom-color: var(--color-primary);
+            color: var(--color-text-primary);
+        }
+
+        .results-content {
+            flex: 1;
+            padding: var(--spacing-6);
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-3);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-bg-secondary);
+            margin-bottom: var(--spacing-3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-item.done {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .action-check {
+            margin-right: var(--spacing-3);
+            color: var(--color-primary);
+        }
+
+        .action-item.done .action-check {
+            color: var(--color-success);
+        }
+
+        .action-text h4 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .action-item.done .action-text h4 {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .action-meta {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+        }
+
+        .action-status {
+            font-size: var(--font-size-xs);
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--radius-sm);
+            margin-left: auto;
+            text-transform: capitalize;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--color-warning);
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+        }
+
+        /* Mind Map */
+        .mindmap-box {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--radius-lg);
+        }
+
+        .mm-node {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            padding: 0.5rem 1rem;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-text-secondary);
+            border-radius: var(--radius-lg);
+            color: var(--color-text-primary);
+            font-size: var(--font-size-sm);
+            box-shadow: var(--shadow-md);
+            z-index: 2;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .mm-node.root {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .mm-connections {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .lp-hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .lp-nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="lp-logo" onclick="window.location.reload()">
+                LSB-USO Olarra <span>TranscribeAI</span>
+            </div>
+
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <button id="lang-toggle" onclick="toggleLang()"
+                    style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                    <span id="lang-label">🇺🇸 EN</span> <i data-lucide="chevron-down" style="width: 14px;"></i>
+                </button>
+                <button class="lp-btn"
+                    style="border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.5rem 1rem;"
+                    onclick="goHome()">
+                    Home
+                </button>
+            </div>
+        </header>
+
+        <!-- LANDING VIEW -->
+        <div id="view-landing" class="landing-container">
+            <div class="bg-animation">
+                <div class="orb orb-1"></div>
+                <div class="orb orb-2"></div>
+                <div class="orb orb-3"></div>
+            </div>
+
+            <div class="lp-content-container">
+                <section class="lp-hero">
+                    <div class="lp-hero-content">
+                        <span class="lp-badge" data-t="lp_heroBadge">🚀 The Future of Transcription</span>
+                        <h1>
+                            <span data-t="lp_heroTitlePrefix">Turn Every Word</span> <br />
+                            <span class="gradient-text" data-t="lp_heroTitleSuffix">Into Actionable Insight</span>
+                        </h1>
+                        <p class="lead" data-t="lp_heroDesc">
+                            Stop taking notes. Start engaging. LSB-USO Olarra TranscribeAI captures, transcribes, and
+                            organizes your meetings with 99% accuracy.
+                        </p>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <button class="lp-btn lp-btn-primary" onclick="startApp()">
+                                <span data-t="lp_startTranscribing">Start Transcribing</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="lp-hero-visual">
+                        <div class="glass-card">
+                            <div style="display: flex; gap: 8px; marginBottom: 1.5rem">
+                                <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
+                                <div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+                                <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
+                            </div>
+                            <div style="margin-top: 2rem;">
+                                <div
+                                    style="height: 10px; width: 70%; background: rgba(255,255,255,0.1); border-radius: 5px; margin-bottom: 10px;">
+                                </div>
+                                <div
+                                    style="height: 10px; width: 50%; background: rgba(255,255,255,0.1); border-radius: 5px; margin-bottom: 10px;">
+                                </div>
+                                <div
+                                    style="height: 10px; width: 90%; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                                </div>
+                            </div>
+                            <div
+                                style="margin-top: 2rem; display: flex; align-items: center; justify-content: space-between; color: #94a3b8; font-size: 0.9rem;">
+                                <span data-t="lp_processing">Processing audio...</span>
+                                <span style="color: var(--lp-primary)">98% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="lp-features">
+                    <div class="feature-card">
+                        <div class="lp-icon"><i data-lucide="zap"></i></div>
+                        <h3 data-t="lp_instantTranscription">Instant Transcription</h3>
+                        <p class="feature-text" data-t="lp_instantTranscriptionDesc">Upload audio or video and get
+                            perfectly formatted text in seconds.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="lp-icon"><i data-lucide="brain"></i></div>
+                        <h3 data-t="lp_smartSummaries">Smart Summaries</h3>
+                        <p class="feature-text" data-t="lp_smartSummariesDesc">Get concise executive summaries and key
+                            takeaways without lifting a finger.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="lp-icon"><i data-lucide="check-square"></i></div>
+                        <h3 data-t="lp_actionItems">Action Items</h3>
+                        <p class="feature-text" data-t="lp_actionItemsDesc">Automatically detect tasks, deadlines, and
+                            assignees.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- MAIN APP VIEW -->
+        <main id="view-app" class="hidden"
+            style="flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 4rem 2rem;">
+
+            <!-- Upload Stage -->
+            <div id="stage-upload" class="fade-in"
+                style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <div style="text-align: center; margin-bottom: 3rem;">
+                    <h2 style="font-size: 2.5rem; margin-bottom: 1rem; background: var(--color-accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;"
+                        data-t="mainTitle">
+                        Transform Audio to Action
+                    </h2>
+                    <p style="color: var(--color-text-secondary); font-size: 1.125rem;" data-t="mainDesc">
+                        Upload your meetings, interviews, or lectures and instantly get summaries.
+                    </p>
+                </div>
+
+                <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+                    <input type="file" id="file-input" style="display: none;" accept="audio/*,video/*"
+                        onchange="handleFileSelect(this.files[0])">
+                    <div class="upload-icon">
+                        <i data-lucide="upload-cloud" style="width: 40px; height: 40px;"></i>
+                    </div>
+                    <div style="text-align: center;">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;" data-t="uploadTitle">Upload Audio or Video
+                        </h3>
+                        <p style="color: var(--color-text-secondary);" data-t="uploadDesc">Drag & drop your file here or
+                            click to browse</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Processing Stage -->
+            <div id="stage-processing" class="hidden" style="width: 100%; max-width: 800px; text-align: center;">
+                <div style="margin-bottom: 2rem;">
+                    <h2 style="font-size: 2rem;" data-t="processing">Processing your file...</h2>
+                    <p id="filename-display" style="color: var(--color-text-secondary); margin-top: 0.5rem;">
+                        filename.mp3</p>
+                </div>
+
+                <div class="process-viz-container">
+                    <div class="pv-steps">
+                        <div class="pv-track-bg"></div>
+                        <div class="pv-track-fill" id="pv-track-fill"></div>
+                        <!-- Steps injected by JS -->
+                        <div class="pv-step" id="pv-step-0">
+                            <div class="pv-circle"><i data-lucide="upload"></i></div>
+                            <span class="pv-label" data-t="s_uploading">Uploading</span>
+                        </div>
+                        <div class="pv-step" id="pv-step-1">
+                            <div class="pv-circle"><i data-lucide="file-audio"></i></div>
+                            <span class="pv-label" data-t="s_analyzing">Analyzing</span>
+                        </div>
+                        <div class="pv-step" id="pv-step-2">
+                            <div class="pv-circle"><i data-lucide="type"></i></div>
+                            <span class="pv-label" data-t="s_transcribing">Transcribing</span>
+                        </div>
+                        <div class="pv-step" id="pv-step-3">
+                            <div class="pv-circle"><i data-lucide="sparkles"></i></div>
+                            <span class="pv-label" data-t="s_insights">Insights</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="processing-complete-btn" class="hidden fade-in" style="margin-top: 4rem;">
+                    <button class="lp-btn lp-btn-primary" onclick="showResultsView()">
+                        <span data-t="viewResults">View Results</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Stage -->
+            <div id="stage-results" class="hidden"
+                style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <div
+                    style="width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="font-size: 1.5rem;" data-t="analyzing">Analysis Results</h2>
+                    <button onclick="resetApp()"
+                        style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; text-decoration: underline;"
+                        data-t="annotateAnother">
+                        Annotate another file
+                    </button>
+                </div>
+
+                <div class="results-container">
+                    <div class="results-tabs">
+                        <button class="results-tab-btn active" onclick="switchTab('transcript')"><i
+                                data-lucide="file-text" width="18"></i> <span
+                                data-t="tab_transcript">Transcript</span></button>
+                        <button class="results-tab-btn" onclick="switchTab('summary')"><i data-lucide="list"
+                                width="18"></i> <span data-t="tab_summary">Summary</span></button>
+                        <button class="results-tab-btn" onclick="switchTab('actions')"><i data-lucide="check-square"
+                                width="18"></i> <span data-t="tab_actions">Action Items</span></button>
+                        <button class="results-tab-btn" onclick="switchTab('mindmap')"><i data-lucide="network"
+                                width="18"></i> <span data-t="tab_mindmap">Mind Map</span></button>
+                    </div>
+
+                    <div class="results-content">
+                        <!-- Transcript Tab -->
+                        <div id="tab-transcript" class="tab-pane active">
+                            <div id="transcript-content"
+                                style="white-space: pre-wrap; line-height: 1.8; color: var(--color-text-secondary);">
+                            </div>
+                        </div>
+
+                        <!-- Summary Tab -->
+                        <div id="tab-summary" class="tab-pane">
+                            <h3 style="margin-bottom: 1rem; color: var(--color-text-primary);" data-t="execSummary">
+                                Executive Summary</h3>
+                            <p id="summary-content"
+                                style="line-height: 1.6; color: var(--color-text-secondary); font-size: 1.1rem; white-space: pre-wrap;">
+                            </p>
+                        </div>
+
+                        <!-- Actions Tab -->
+                        <div id="tab-actions" class="tab-pane">
+                            <div id="actions-list" style="display: flex; flexDirection: column; gap: 1rem;"></div>
+                        </div>
+
+                        <!-- MindMap Tab -->
+                        <div id="tab-mindmap" class="tab-pane">
+                            <div id="mindmap-container" class="mindmap-box">
+                                <svg id="mm-lines" class="mm-connections"></svg>
+                                <!-- Nodes injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- TRANSLATIONS (Embedded from translations.js) ---
+        const translations = {
+            en: {
+                signIn: "Sign In", dashboard: "Dashboard",
+                lp_navFeatures: "Features", lp_navSolutions: "Solutions", lp_navPricing: "Pricing",
+                lp_heroBadge: "🚀 The Future of Transcription", lp_heroTitlePrefix: "Turn Every Word", lp_heroTitleSuffix: "Into Actionable Insight",
+                lp_heroDesc: "Stop taking notes. Start engaging. LSB-USO Olarra TranscribeAI captures, transcribes, and organizes your meetings with 99% accuracy.",
+                lp_startTranscribing: "Start Transcribing", lp_processing: "Processing audio...",
+                lp_instantTranscription: "Instant Transcription", lp_instantTranscriptionDesc: "Upload audio or video and get perfectly formatted text in seconds using our advanced AI engine.",
+                lp_smartSummaries: "Smart Summaries", lp_smartSummariesDesc: "Get concise executive summaries, bullet points, and key takeaways without lifting a finger.",
+                lp_actionItems: "Action Items", lp_actionItemsDesc: "Automatically detect tasks, deadlines, and assignees from your conversation history.",
+
+                mainTitle: "Transform Audio to Action", mainDesc: "Upload your meetings, interviews, or lectures and instantly get summaries, action items, and mind maps.",
+                uploadTitle: "Upload Audio or Video", uploadDesc: "Drag & drop your file here or click to browse",
+                processing: "Processing your file...", analyzing: "Analysis Complete!", viewResults: "View Results", annotateAnother: "Annotate another file",
+
+                s_uploading: "Uploading", s_analyzing: "Analyzing", s_transcribing: "Transcribing", s_insights: "Generating Insights",
+
+                tab_transcript: "Transcript", tab_summary: "Summary", tab_actions: "Action Items", tab_mindmap: "Mind Map",
+                execSummary: "Executive Summary"
+            },
+            es: {
+                signIn: "Iniciar Sesión", dashboard: "Panel de Control",
+                lp_navFeatures: "Características", lp_navSolutions: "Soluciones", lp_navPricing: "Precios",
+                lp_heroBadge: "🚀 El Futuro de la Transcripción", lp_heroTitlePrefix: "Convierte Cada Palabra", lp_heroTitleSuffix: "En Inteligencia Accionable",
+                lp_heroDesc: "Deja de tomar notas. Empieza a participar. LSB-USO Olarra TranscribeAI captura, transcribe y organiza tus reuniones con un 99% de precisión.",
+                lp_startTranscribing: "Empezar a Transcribir", lp_processing: "Procesando audio...",
+                lp_instantTranscription: "Transcripción Instantánea", lp_instantTranscriptionDesc: "Sube audio o video y obtén texto perfectamente formateado en segundos con nuestro motor de IA avanzado.",
+                lp_smartSummaries: "Resúmenes Inteligentes", lp_smartSummariesDesc: "Obtén resúmenes ejecutivos concisos, puntos clave y conclusiones sin mover un dedo.",
+                lp_actionItems: "Tareas Pendientes", lp_actionItemsDesc: "Detecta automáticamente tareas, plazos y responsables directamente desde tus conversaciones.",
+
+                mainTitle: "Transforma Audio en Acción", mainDesc: "Sube tus reuniones, entrevistas o conferencias y obtén al instante resúmenes, tareas y mapas mentales.",
+                uploadTitle: "Subir Audio o Video", uploadDesc: "Arrastra y suelta tu archivo aquí o haz clic para buscar",
+                processing: "Procesando tu archivo...", analyzing: "¡Análisis Completo!", viewResults: "Ver Resultados", annotateAnother: "Anotar otro archivo",
+
+                s_uploading: "Subiendo", s_analyzing: "Analizando", s_transcribing: "Transcribiendo", s_insights: "Generando Insights",
+
+                tab_transcript: "Transcripción", tab_summary: "Resumen", tab_actions: "Tareas", tab_mindmap: "Mapa Mental",
+                execSummary: "Resumen Ejecutivo"
+            }
+        };
+
+        // --- MOCK DATA ---
+        const MOCK_DATA = {
+            en: {
+                transcript: `[00:00] Sarah: Thanks for joining everyone. Today we need to drive the Q4 product roadmap.
+[00:15] Mike: I think we should prioritize the mobile app redesign. Users have been asking for dark mode.
+[00:30] Sarah: Agreed, let's put that at the top. What about the API integration?
+[00:45] Jen: The API is stable, but we need documentation. That's a blocker for partners.
+[01:00] Sarah: Okay, so action items: Mike on UI, Jen on Docs.`,
+                summary: `The team met to discuss the Q4 product roadmap. Key priorities identified were the mobile app redesign (specifically dark mode) and API documentation for partners.`,
+                actionItems: [
+                    { id: 1, text: "Design Dark Mode interface for mobile app", owner: "Mike", status: "pending" },
+                    { id: 2, text: "Write comprehensive API documentation", owner: "Jen", status: "pending" },
+                    { id: 3, text: "Finalize Q4 roadmap schedule", owner: "Sarah", status: "in-progress" }
+                ],
+                mindMap: [
+                    { id: 'root', label: 'Q4 Roadmap', x: 50, y: 50 },
+                    { id: '1', label: 'Mobile App', x: 20, y: 80, parent: 'root' },
+                    { id: '2', label: 'API Docs', x: 80, y: 80, parent: 'root' },
+                    { id: '3', label: 'Dark Mode', x: 20, y: 110, parent: '1' },
+                    { id: '4', label: 'Partner Access', x: 80, y: 110, parent: '2' },
+                ]
+            },
+            es: {
+                transcript: `[00:00] Sarah: Gracias por unirse a todos. Hoy necesitamos definir la hoja de ruta del producto para el Q4.
+[00:15] Mike: Creo que deberíamos priorizar el rediseño de la app móvil. Los usuarios han estado pidiendo el modo oscuro.
+[00:30] Sarah: De acuerdo, pongamos eso en lo más alto. ¿Qué pasa con la integración de la API?
+[00:45] Jen: La API es estable, pero necesitamos documentación. Eso es un bloqueo para los socios.
+[01:00] Sarah: Vale, entonces tareas: Mike en UI, Jen en Documentación.`,
+                summary: `El equipo se reunió para discutir la hoja de ruta del producto Q4. Las prioridades clave identificadas fueron el rediseño de la aplicación móvil (específicamente el modo oscuro) y la documentación de la API para los socios.`,
+                actionItems: [
+                    { id: 1, text: "Diseñar interfaz de Modo Oscuro para app móvil", owner: "Mike", status: "pending" },
+                    { id: 2, text: "Escribir documentación completa de la API", owner: "Jen", status: "pending" },
+                    { id: 3, text: "Finalizar cronograma de hoja de ruta Q4", owner: "Sarah", status: "in-progress" }
+                ],
+                mindMap: [
+                    { id: 'root', label: 'Hoja de Ruta Q4', x: 50, y: 50 },
+                    { id: '1', label: 'App Móvil', x: 20, y: 80, parent: 'root' },
+                    { id: '2', label: 'Docs API', x: 80, y: 80, parent: 'root' },
+                    { id: '3', label: 'Modo Oscuro', x: 20, y: 110, parent: '1' },
+                    { id: '4', label: 'Acceso Socios', x: 80, y: 110, parent: '2' },
+                ]
+            }
+        };
+
+        // --- APP STATE ---
+        let currentLang = 'en';
+        let currentFile = null;
+        let actionItemsState = [];
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            translatePage();
+        });
+
+        // --- NAVIGATION ---
+        function startApp() {
+            document.getElementById('view-landing').style.display = 'none';
+            document.getElementById('view-app').classList.remove('hidden');
+            document.getElementById('view-app').style.display = 'flex';
+        }
+
+        function goHome() {
+            document.getElementById('view-landing').style.display = 'block';
+            document.getElementById('view-app').classList.add('hidden');
+            document.getElementById('view-app').style.display = 'none';
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'en' ? 'es' : 'en';
+            document.getElementById('lang-label').innerText = currentLang === 'en' ? '🇺🇸 EN' : '🇪🇸 ES';
+            translatePage();
+            // Also re-render results if visible
+            if (!document.getElementById('stage-results').classList.contains('hidden')) {
+                renderResultsData();
+            }
+        }
+
+        function translatePage() {
+            const t = translations[currentLang];
+            document.querySelectorAll('[data-t]').forEach(el => {
+                const key = el.getAttribute('data-t');
+                if (t[key]) el.textContent = t[key];
+            });
+        }
+
+        // --- FILE HANDLING ---
+        function handleFileSelect(file) {
+            if (!file) return;
+            currentFile = file;
+            document.getElementById('filename-display').textContent = file.name;
+
+            document.getElementById('stage-upload').classList.add('hidden');
+            document.getElementById('stage-processing').classList.remove('hidden');
+
+            simulateProcessing();
+        }
+
+        function simulateProcessing() {
+            let step = 0;
+            const steps = [0, 1, 2, 3];
+            const maxStep = 3;
+
+            // Initial state
+            steps.forEach(i => {
+                document.getElementById(`pv-step-${i}`).classList.remove('active', 'done');
+            });
+            document.getElementById('pv-track-fill').style.width = '0%';
+            document.getElementById('processing-complete-btn').classList.add('hidden');
+
+            const interval = setInterval(() => {
+                const prev = step - 1;
+                if (prev >= 0) {
+                    document.getElementById(`pv-step-${prev}`).classList.remove('active');
+                    document.getElementById(`pv-step-${prev}`).classList.add('done');
+                }
+
+                if (step <= maxStep) {
+                    document.getElementById(`pv-step-${step}`).classList.add('active');
+                    const progress = ((step) / maxStep) * 100;
+                    document.getElementById('pv-track-fill').style.width = `${progress}%`;
+                    step++;
+                } else {
+                    clearInterval(interval);
+                    document.getElementById('pv-track-fill').style.width = '100%';
+                    document.getElementById(`pv-step-${maxStep}`).classList.remove('active');
+                    document.getElementById(`pv-step-${maxStep}`).classList.add('done');
+
+                    setTimeout(() => {
+                        document.getElementById('processing-complete-btn').classList.remove('hidden');
+                    }, 500);
+                }
+                lucide.createIcons();
+            }, 1500);
+        }
+
+        function showResultsView() {
+            document.getElementById('stage-processing').classList.add('hidden');
+            document.getElementById('stage-results').classList.remove('hidden');
+            renderResultsData();
+        }
+
+        function resetApp() {
+            document.getElementById('stage-results').classList.add('hidden');
+            document.getElementById('stage-upload').classList.remove('hidden');
+            document.getElementById('file-input').value = '';
+            currentFile = null;
+        }
+
+        // --- RESULTS LOGIC ---
+        function renderResultsData() {
+            const data = MOCK_DATA[currentLang];
+            actionItemsState = [...data.actionItems]; // Reset action items state on re-render
+
+            // Transcript
+            document.getElementById('transcript-content').textContent = data.transcript;
+
+            // Summary
+            document.getElementById('summary-content').textContent = data.summary;
+
+            // Action Items
+            renderActionItems();
+
+            // Mind Map
+            renderMindMap(data.mindMap);
+        }
+
+        function renderActionItems() {
+            const container = document.getElementById('actions-list');
+            container.innerHTML = '';
+            actionItemsState.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `action-item ${item.status === 'completed' ? 'done' : ''}`;
+                div.onclick = () => toggleActionItem(index);
+                div.innerHTML = `
+                    <div class="action-check"><i data-lucide="check-square" width="20"></i></div>
+                    <div class="action-text">
+                        <h4>${item.text}</h4>
+                        <span class="action-meta">Owner: ${item.owner}</span>
+                    </div>
+                    <div class="action-status status-${item.status}">${item.status}</div>
+                `;
+                container.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function toggleActionItem(index) {
+            const item = actionItemsState[index];
+            item.status = item.status === 'pending' ? 'completed' : 'pending';
+            renderActionItems();
+        }
+
+        function renderMindMap(nodes) {
+            const container = document.getElementById('mindmap-container');
+            const svg = document.getElementById('mm-lines');
+            // Clear existing nodes (keep svg)
+            const oldNodes = container.querySelectorAll('.mm-node');
+            oldNodes.forEach(n => n.remove());
+            svg.innerHTML = '';
+
+            nodes.forEach(node => {
+                // Create Node
+                const div = document.createElement('div');
+                div.className = `mm-node ${node.id === 'root' ? 'root' : ''}`;
+                div.textContent = node.label;
+                div.style.left = `${node.x}%`;
+                div.style.top = `${node.y}px`;
+                container.appendChild(div);
+
+                // Draw Line if parent exists
+                if (node.parent) {
+                    const parentData = nodes.find(n => n.id === node.parent);
+                    if (parentData) {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', `${parentData.x}%`);
+                        line.setAttribute('y1', parentData.y);
+                        line.setAttribute('x2', `${node.x}%`);
+                        line.setAttribute('y2', node.y);
+                        line.setAttribute('stroke', '#94a3b8');
+                        line.setAttribute('stroke-width', '2');
+                        line.setAttribute('opacity', '0.5');
+                        svg.appendChild(line);
+                    }
+                }
+            });
+        }
+
+        function switchTab(tabName) {
+            // Update Buttons
+            document.querySelectorAll('.results-tab-btn').forEach(btn => btn.classList.remove('active'));
+            // This relies on order, simpler to just use event target or select by text, but for now:
+            const buttons = document.querySelectorAll('.results-tab-btn');
+            if (tabName === 'transcript') buttons[0].classList.add('active');
+            if (tabName === 'summary') buttons[1].classList.add('active');
+            if (tabName === 'actions') buttons[2].classList.add('active');
+            if (tabName === 'mindmap') buttons[3].classList.add('active');
+
+            // Update Panes
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+    </script>
+</body>
+
+</html>

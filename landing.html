@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TranscribeAI | Turn Conversations into Action</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            /* Colors */
+            --color-bg-primary: #0f172a;
+            --color-bg-secondary: #1e293b;
+            --color-bg-card: #1e293b;
+            --color-text-primary: #f8fafc;
+            --color-text-secondary: #94a3b8;
+            --color-primary: #3b82f6;
+            --color-primary-hover: #2563eb;
+            --color-accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+
+            /* Spacing */
+            --spacing-4: 1rem;
+            --spacing-6: 1.5rem;
+            --spacing-8: 2rem;
+            --spacing-12: 3rem;
+
+            /* Borders */
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+
+            /* Transitions */
+            --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Global Animations --- */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(-15px, 15px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* --- Header --- */
+        .header {
+            padding: var(--spacing-6) var(--spacing-8);
+            border-bottom: 1px solid var(--color-bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--color-accent-gradient);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .logo-text span {
+            color: var(--color-primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--color-bg-secondary);
+            color: var(--color-text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--color-text-secondary);
+            color: var(--color-text-primary);
+        }
+
+        /* --- Views --- */
+        .view-section {
+            width: 100%;
+            transition: opacity 0.3s;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- Landing UI --- */
+        .hero {
+            position: relative;
+            padding: var(--spacing-12) var(--spacing-8);
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, rgba(15, 23, 42, 0) 50%);
+        }
+
+        .hero-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--color-primary);
+            filter: blur(150px);
+            opacity: 0.2;
+            z-index: 0;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title span {
+            background: var(--color-accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 650px;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            padding: 1rem 2rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: var(--color-primary-hover);
+        }
+
+        /* --- App Container --- */
+        .app-main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- Upload Zone --- */
+        .upload-card {
+            width: 100%;
+            max-width: 650px;
+            min-height: 350px;
+            border: 2px dashed var(--color-bg-secondary);
+            border-radius: var(--radius-2xl);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(30, 41, 59, 0.5);
+            gap: 1.5rem;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-card.dragging {
+            border-color: var(--color-primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-icon-box {
+            width: 80px;
+            height: 80px;
+            background: var(--color-bg-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .upload-card.dragging .upload-icon-box {
+            background: var(--color-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* --- Progress UI --- */
+        .progress-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 3rem 0;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .progress-bar-bg {
+            position: absolute;
+            top: 24px;
+            left: 5%;
+            right: 5%;
+            height: 4px;
+            background: var(--color-bg-secondary);
+            z-index: 1;
+        }
+
+        .progress-bar-fill {
+            position: absolute;
+            top: 24px;
+            left: 5%;
+            height: 4px;
+            background: var(--color-primary);
+            z-index: 2;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+            width: 80px;
+        }
+
+        .step-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--color-bg-primary);
+            border: 2px solid var(--color-bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-circle {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+        }
+
+        .step.done .step-circle {
+            border-color: var(--color-success);
+            color: var(--color-success);
+        }
+
+        .step-text {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+        }
+
+        /* --- Results View --- */
+        .results-box {
+            width: 100%;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-bg-secondary);
+            border-radius: var(--radius-xl);
+            display: flex;
+            flex-direction: column;
+            min-height: 600px;
+            overflow: hidden;
+        }
+
+        .results-tabs {
+            display: flex;
+            background: rgba(15, 23, 42, 0.4);
+            border-bottom: 1px solid var(--color-bg-secondary);
+        }
+
+        .tab-trigger {
+            flex: 1;
+            padding: 1.25rem;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab-trigger.active {
+            color: var(--color-text-primary);
+            border-bottom-color: var(--color-primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .tab-panel {
+            display: none;
+            padding: 2.5rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .action-item {
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lang-selector {
+            position: relative;
+        }
+
+        .lang-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-bg-secondary);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            min-width: 130px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+        }
+
+        .lang-menu.visible {
+            display: block;
+        }
+
+        .lang-item {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            text-align: left;
+            background: transparent;
+            border: none;
+            color: var(--color-text-primary);
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .lang-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-shell">
+        <header class="header">
+            <div class="logo" onclick="window.location.reload()">
+                <div class="logo-icon"><i data-lucide="mic" style="color: white; width: 18px;"></i></div>
+                <div class="logo-text">Transcribe<span>AI</span></div>
+            </div>
+
+            <div class="nav-actions">
+                <div class="lang-selector">
+                    <button class="btn-ghost" onclick="toggleLangMenu()">
+                        <span id="label-lang">🇺🇸 EN</span>
+                        <i data-lucide="chevron-down" style="width: 14px;"></i>
+                    </button>
+                    <div class="lang-menu" id="lang-menu-box">
+                        <button class="lang-item" onclick="setLang('en')">🇺🇸 English</button>
+                        <button class="lang-item" onclick="setLang('es')">🇪🇸 Español</button>
+                    </div>
+                </div>
+                <button class="btn-ghost" id="nav-btn" data-t="signIn">Sign In</button>
+            </div>
+        </header>
+
+        <!-- LANDING SECTION -->
+        <main id="view-landing" class="view-section">
+            <section class="hero">
+                <div class="hero-glow" style="top: 15%; left: 10%;"></div>
+                <div class="hero-glow" style="bottom: 15%; right: 10%; background: #8b5cf6;"></div>
+
+                <div class="hero-content fade-in" style="position: relative; z-index: 1; max-width: 900px;">
+                    <h1 class="hero-title">
+                        <span data-t="hero1">Turn Conversations into</span> <br>
+                        <span data-t="hero2">Actionable Intelligence</span>
+                    </h1>
+                    <p class="hero-desc" data-t="heroDesc">
+                        The AI-powered transcription tool that doesn't just listen—it understands meetings. Get
+                        summaries, task lists, and mind maps in seconds.
+                    </p>
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <button class="btn-primary" onclick="goToApp()">
+                            <span data-t="startBtn">Start for Free</span>
+                            <i data-lucide="arrow-right" style="width: 20px;"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- APP SECTION -->
+        <main id="view-app" class="view-section hidden">
+            <div class="app-main">
+
+                <!-- Stage 1: Upload -->
+                <div id="stage-upload" class="fade-in"
+                    style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <div style="text-align: center; margin-bottom: 3.5rem;">
+                        <h2 data-t="appTitle" style="font-size: 2.5rem; margin-bottom: 1rem;">Transform Audio to Action
+                        </h2>
+                        <p data-t="appSubtitle" style="color: var(--color-text-secondary); font-size: 1.125rem;">Upload
+                            your recordings and let AI do the work.</p>
+                    </div>
+
+                    <div class="upload-card" id="drop-zone">
+                        <input type="file" id="file-input" accept="audio/*,video/*" style="display: none;">
+                        <div class="upload-icon-box">
+                            <i data-lucide="upload-cloud" style="width: 40px;"></i>
+                        </div>
+                        <div style="text-align: center;">
+                            <h3 data-t="uTitle" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Upload Recording</h3>
+                            <p data-t="uDesc" style="color: var(--color-text-secondary);">Click to browse or drag and
+                                drop files here</p>
+                        </div>
+                        <div style="display: flex; gap: 1rem; color: var(--color-text-secondary); font-size: 0.8rem;">
+                            <span>MP3, WAV, M4A</span> • <span>MP4, MOV</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 2: Processing -->
+                <div id="stage-processing" class="hidden" style="width: 100%; max-width: 800px;">
+                    <div style="text-align: center; margin-bottom: 3rem;">
+                        <h2 id="processing-status" data-t="pTitle" style="font-size: 2rem;">Processing your file...</h2>
+                        <p id="p-filename" style="color: var(--color-primary); font-weight: 500; margin-top: 0.5rem;">
+                        </p>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-steps">
+                            <div class="progress-bar-bg"></div>
+                            <div class="progress-bar-fill" id="pb-fill"></div>
+
+                            <div class="step" id="s0">
+                                <div class="step-circle"><i data-lucide="upload" style="width: 22px;"></i></div>
+                                <span class="step-text" data-t="s1">Upload</span>
+                            </div>
+                            <div class="step" id="s1">
+                                <div class="step-circle"><i data-lucide="audio-lines" style="width: 22px;"></i></div>
+                                <span class="step-text" data-t="s2">Analysis</span>
+                            </div>
+                            <div class="step" id="s2">
+                                <div class="step-circle"><i data-lucide="type" style="width: 22px;"></i></div>
+                                <span class="step-text" data-t="s3">Transcription</span>
+                            </div>
+                            <div class="step" id="s3">
+                                <div class="step-circle"><i data-lucide="sparkles" style="width: 22px;"></i></div>
+                                <span class="step-text" data-t="s4">Insights</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="btn-show-results" class="hidden" style="text-align: center; margin-top: 4rem;">
+                        <button class="btn-primary" style="padding: 1rem 3rem; margin: 0 auto;" onclick="showResults()"
+                            data-t="viewResBtn">
+                            View Results
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stage 3: Results -->
+                <div id="stage-results" class="hidden" style="width: 100%;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 data-t="resTitle" style="font-size: 1.5rem;">Analysis Results</h2>
+                        <button class="btn-ghost" onclick="window.location.reload()" data-t="newBtn">Annotate New
+                            File</button>
+                    </div>
+
+                    <div class="results-box fade-in">
+                        <div class="results-tabs">
+                            <button class="tab-trigger active" onclick="setTab(event, 'tab-txt')"><i
+                                    data-lucide="file-text" style="width: 18px;"></i> <span
+                                    data-t="t1">Transcript</span></button>
+                            <button class="tab-trigger" onclick="setTab(event, 'tab-sum')"><i data-lucide="list"
+                                    style="width: 18px;"></i> <span data-t="t2">Summary</span></button>
+                            <button class="tab-trigger" onclick="setTab(event, 'tab-act')"><i data-lucide="check-square"
+                                    style="width: 18px;"></i> <span data-t="t3">Tasks</span></button>
+                        </div>
+
+                        <div class="tab-panel active" id="tab-txt">
+                            <div style="line-height: 2; color: var(--color-text-secondary);">
+                                <p><strong style="color:var(--color-primary)">[00:12] Sarah:</strong> <span
+                                        data-t="mt1">Alright team, let's discuss the product launch strategy.</span></p>
+                                <p><strong style="color:var(--color-primary)">[00:45] John:</strong> <span
+                                        data-t="mt2">The engineering team is ready with the v2.0 build.</span></p>
+                                <p><strong style="color:var(--color-primary)">[01:10] Sarah:</strong> <span
+                                        data-t="mt3">Perfect. Mark, can you finalize the documentation by Friday?</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="tab-panel" id="tab-sum">
+                            <h3 data-t="sumTitle" style="margin-bottom: 1rem;">Key Takeaways</h3>
+                            <p data-t="sumContent" style="color: var(--color-text-secondary); line-height: 1.7;">The
+                                meeting covered the roadmap for the v2.0 launch. Core tasks include final engineering
+                                checks and documentation updates.</p>
+                        </div>
+
+                        <div class="tab-panel" id="tab-act">
+                            <div class="action-item">
+                                <div><strong data-t="task1">Finalize API Documentation</strong><br><small
+                                        style="color:var(--color-text-secondary)">Assigned to: Mark</small></div>
+                                <span
+                                    style="color:var(--color-warning); font-size: 0.8rem; font-weight: 600;">PENDING</span>
+                            </div>
+                            <div class="action-item">
+                                <div><strong data-t="task2">Prepare Social Media Assets</strong><br><small
+                                        style="color:var(--color-text-secondary)">Assigned to: Chloe</small></div>
+                                <span
+                                    style="color:var(--color-success); font-size: 0.8rem; font-weight: 600;">DONE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+                        <button class="btn-primary" data-t="exportBtn">Export as PDF</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // --- Translations ---
+        const i18n = {
+            en: {
+                signIn: "Sign In", hero1: "Turn Conversations into", hero2: "Actionable Intelligence",
+                heroDesc: "The AI-powered transcription tool that understands meetings. Get summaries, task lists, and mind maps in seconds.",
+                startBtn: "Start for Free", appTitle: "Transform Audio to Action", appSubtitle: "Upload your recordings and let AI do the work.",
+                uTitle: "Upload Recording", uDesc: "Click to browse or drag and drop files here",
+                pTitle: "Processing your file...", pDone: "Analysis Complete!", s1: "Upload", s2: "Analysis", s3: "Transcription", s4: "Insights",
+                viewResBtn: "View Results", resTitle: "Analysis Results", newBtn: "New File",
+                t1: "Transcript", t2: "Summary", t3: "Tasks", exportBtn: "Export PDF",
+                mt1: "Alright team, let's discuss the product launch strategy.",
+                mt2: "The engineering team is ready with the v2.0 build.",
+                mt3: "Perfect. Mark, can you finalize the documentation by Friday?",
+                sumTitle: "Key Takeaways", sumContent: "The meeting covered the roadmap for the v2.0 launch.",
+                task1: "Finalize API Documentation", task2: "Prepare Social Media Assets"
+            },
+            es: {
+                signIn: "Iniciar Sesión", hero1: "Convierte Conversaciones en", hero2: "Inteligencia Accionable",
+                heroDesc: "La herramienta con IA que entiende reuniones. Obtén resúmenes, tareas y mapas mentales en segundos.",
+                startBtn: "Empezar Gratis", appTitle: "Transforma Audio en Acción", appSubtitle: "Sube tus grabaciones y deja que la IA trabaje.",
+                uTitle: "Subir Grabación", uDesc: "Haz clic para buscar o arrastra archivos aquí",
+                pTitle: "Procesando archivo...", pDone: "¡Análisis Completado!", s1: "Subida", s2: "Análisis", s3: "Transcripción", s4: "Resultados",
+                viewResBtn: "Ver Resultados", resTitle: "Resultados del Análisis", newBtn: "Nuevo Archivo",
+                t1: "Transcripción", t2: "Resumen", t3: "Tareas", exportBtn: "Exportar PDF",
+                mt1: "Muy bien equipo, discutamos la estrategia de lanzamiento.",
+                mt2: "El equipo de ingeniería está listo con la versión 2.0.",
+                mt3: "Perfecto. Mark, ¿puedes terminar la documentación para el viernes?",
+                sumTitle: "Puntos Clave", sumContent: "La reunión cubrió la hoja de ruta para el lanzamiento de la v2.0.",
+                task1: "Finalizar Documentación API", task2: "Preparar activos de Redes Sociales"
+            }
+        };
+
+        let currentLang = 'en';
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('label-lang').textContent = lang === 'en' ? '🇺🇸 EN' : '🇪🇸 ES';
+            document.querySelectorAll('[data-t]').forEach(el => {
+                const key = el.getAttribute('data-t');
+                if (i18n[lang][key]) el.textContent = i18n[lang][key];
+            });
+            document.getElementById('lang-menu-box').classList.remove('visible');
+        }
+
+        function toggleLangMenu() { document.getElementById('lang-menu-box').classList.toggle('visible'); }
+
+        // --- Navigation ---
+        function goToApp() {
+            document.getElementById('view-landing').classList.add('hidden');
+            document.getElementById('view-app').classList.remove('hidden');
+            document.getElementById('nav-btn').textContent = "Dashboard";
+        }
+
+        // --- Logic ---
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+
+        dropZone.onclick = () => fileInput.click();
+
+        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragging'); };
+        dropZone.ondragleave = () => dropZone.classList.remove('dragging');
+        dropZone.ondrop = (e) => {
+            e.preventDefault(); dropZone.classList.remove('dragging');
+            if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+        };
+
+        fileInput.onchange = (e) => {
+            if (e.target.files.length) handleFile(e.target.files[0]);
+        };
+
+        let transcriptionResult = null;
+
+        async function handleFile(file) {
+            document.getElementById('stage-upload').classList.add('hidden');
+            document.getElementById('stage-processing').classList.remove('hidden');
+            document.getElementById('p-filename').textContent = file.name;
+
+            // Start simulation for visual feedback
+            let progress = 0;
+            const pb = document.getElementById('pb-fill');
+            const timer = setInterval(() => {
+                if (progress < 90) { // Hold at 90% until real transcription finishes
+                    progress += 2;
+                    pb.style.width = progress + '%';
+                    const step = Math.floor(progress / 25);
+                    document.querySelectorAll('.step').forEach((el, idx) => {
+                        if (idx < step) { el.classList.add('done'); el.classList.remove('active'); }
+                        else if (idx === step) { el.classList.add('active'); }
+                    });
+                }
+            }, 500);
+
+            try {
+                const formData = new FormData();
+                formData.append('audio', file);
+
+                const response = await fetch('http://localhost:3000/api/transcribe', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error('Transcription failed');
+
+                transcriptionResult = await response.json();
+
+                // Complete the progress
+                clearInterval(timer);
+                pb.style.width = '100%';
+                document.querySelectorAll('.step').forEach(el => el.classList.add('done'));
+                document.getElementById('processing-status').textContent = i18n[currentLang].pDone;
+                document.getElementById('btn-show-results').classList.remove('hidden');
+
+            } catch (error) {
+                console.error(error);
+                clearInterval(timer);
+                alert(currentLang === 'en' ? 'Error: Make sure the server is running and the API key is set in .env' : 'Error: Asegúrate de que el servidor esté funcionando y la API key esté en el .env');
+                window.location.reload();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('stage-processing').classList.add('hidden');
+            document.getElementById('stage-results').classList.remove('hidden');
+
+            if (transcriptionResult && transcriptionResult.text) {
+                // Update transcript tab
+                const txtPanel = document.getElementById('tab-txt');
+                txtPanel.innerHTML = `<div style="line-height: 1.8; color: var(--color-text-secondary); white-space: pre-wrap;">${transcriptionResult.text}</div>`;
+
+                // Update summary tab
+                if (transcriptionResult.summary) {
+                    document.getElementById('tab-sum').innerHTML = `
+                        <h3 style="margin-bottom: 1rem;">${i18n[currentLang].sumTitle}</h3>
+                        <p style="color: var(--color-text-secondary); line-height: 1.7;">${transcriptionResult.summary}</p>
+                    `;
+                }
+            }
+
+            lucide.createIcons();
+        }
+
+        function setTab(e, id) {
+            document.querySelectorAll('.tab-trigger').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            document.getElementById(id).classList.add('active');
+            lucide.createIcons();
+        }
+
+    </script>
+</body>
+
+</html>
